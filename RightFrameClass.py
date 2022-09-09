@@ -28,7 +28,9 @@ class RightFrameClass:
                           values=('Juan', '33'))
 
         self.table.pack()
-
+        self.RemoveButton = tk.Button(self.RightFrame, text="Remove selected items", bg='red', fg="white",
+                                      command=self.Remove)
+        self.RemoveButton.pack()
 
         return self.RightFrame
 
@@ -36,3 +38,9 @@ class RightFrameClass:
         self.table.insert(parent='', index='end', iid=self.count, text='',
                           values=(name, age))
         self.count = self.count + 1
+
+    def Remove (self):
+        selected_items = self.table.selection()
+        for selected_item in selected_items:
+            self.table.delete(selected_item)
+

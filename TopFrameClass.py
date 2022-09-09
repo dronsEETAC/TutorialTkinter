@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from ParameterFrameClass import ParameterFrameClass
 
 class TopFrameClass:
 
@@ -16,7 +17,7 @@ class TopFrameClass:
 
         self.Button1 = tk.Button(self.TopFrame, text="Show alert", bg='red', fg="white", command=self.button1Clicked)
         self.Button1.grid(row=0, column=0, padx=5, pady=5, sticky="nesw")
-        self.Button2 = tk.Button(self.TopFrame, text="Button 2", bg='blue', fg="white", command=self.button1Clicked)
+        self.Button2 = tk.Button(self.TopFrame, text="Parameters", bg='blue', fg="white", command=self.button2Clicked)
         self.Button2.grid(row=0, column=1, padx=5, pady=5, sticky="nesw")
         self.Button3 = tk.Button(self.TopFrame, text="Get Value", bg='yellow', fg="black", command=self.button1Clicked)
         self.Button3.grid(row=0, column=2, padx=5, pady=5, sticky="nesw")
@@ -54,3 +55,13 @@ class TopFrameClass:
 
     def setRightFrame (self, rightFrameClass):
         self.rightFrameClass = rightFrameClass
+
+    def button2Clicked (self):
+        newWindow = tk.Toplevel(self.TopFrame)
+        newWindow.title("Parameter Window")
+
+        # sets the geometry of toplevel
+        newWindow.geometry("800x600")
+        parameterFrameClass = ParameterFrameClass()
+        parameterFrame = parameterFrameClass.buildFrame(newWindow)
+        parameterFrame.pack(fill="both", expand="yes", padx=10, pady=10)
