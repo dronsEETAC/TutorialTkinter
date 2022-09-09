@@ -36,6 +36,7 @@ class TopFrameClass:
         self.Button6 = tk.Button(self.inputFrame, text="Enter new user", bg='green', fg="white",
                                  command=self.button6Clicked)
         self.Button6.grid(row=0, column=4, padx=5, pady=5, sticky="nesw")
+
         self.inputFrame.grid(row = 2, column = 0, columnspan = 4, padx = 250, pady = 5, sticky = "nesw")
 
         return self.TopFrame
@@ -49,4 +50,7 @@ class TopFrameClass:
         self.value.set(45)
 
     def button6Clicked (self):
-        print ('Name ', self.entryName.get(), ' Age: ', self.entryAge.get())
+        self.rightFrameClass.PutEntry(self.entryName.get(),self.entryAge.get())
+
+    def setRightFrame (self, rightFrameClass):
+        self.rightFrameClass = rightFrameClass

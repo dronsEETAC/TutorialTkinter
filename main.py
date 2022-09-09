@@ -1,5 +1,6 @@
 import tkinter as tk
 from TopFrameClass import TopFrameClass
+from RightFrameClass import RightFrameClass
 
 def ConnectButtonClicked():
     global connected
@@ -30,8 +31,12 @@ MidFrame = tk.Frame(MainFrame)
 MidFrame.pack(fill="both", expand="yes", padx=10, pady=5)
 LeftFrame = tk.LabelFrame(MidFrame, text = 'Left')
 LeftFrame.pack(side = tk.LEFT,fill="both", expand="yes", padx=5, pady=5)
-RightFrame = tk.LabelFrame(MidFrame, text = 'Right')
+
+rightFrameClass = RightFrameClass()
+RightFrame= rightFrameClass.buildFrame(MidFrame)
+topFrameClass.setRightFrame (rightFrameClass)
 RightFrame.pack(side = tk.RIGHT,fill="both", expand="yes", padx=5, pady=5)
+
 BottomFrame = tk.LabelFrame(MainFrame, text = 'Bottom')
 BottomFrame.pack(fill="both", expand="yes", padx=10, pady=5)
 
