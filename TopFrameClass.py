@@ -4,7 +4,9 @@ from ParameterFrameClass import ParameterFrameClass
 
 class TopFrameClass:
 
-    def buildFrame(self, fatherFrame):
+    def buildFrame(self, fatherFrame, client):
+        self.client = client
+
         self.TopFrame = tk.LabelFrame(fatherFrame, text='Top')
         self.TopFrame.pack(fill="both", expand="yes", padx=10, pady=5)
         self.TopFrame.rowconfigure(0, weight=1)
@@ -19,7 +21,7 @@ class TopFrameClass:
         self.Button1.grid(row=0, column=0, padx=5, pady=5, sticky="nesw")
         self.Button2 = tk.Button(self.TopFrame, text="Parameters", bg='blue', fg="white", command=self.button2Clicked)
         self.Button2.grid(row=0, column=1, padx=5, pady=5, sticky="nesw")
-        self.Button3 = tk.Button(self.TopFrame, text="Get Value", bg='yellow', fg="black", command=self.button1Clicked)
+        self.Button3 = tk.Button(self.TopFrame, text="Get Value", bg='yellow', fg="black", command=self.button3Clicked)
         self.Button3.grid(row=0, column=2, padx=5, pady=5, sticky="nesw")
         self.value = tk.StringVar()
         self.valueLabel = tk.Label(self.TopFrame, borderwidth=2, relief="groove", textvariable=self.value)
@@ -47,8 +49,10 @@ class TopFrameClass:
         messagebox.showinfo('information', 'Hello')
 
 
-    def button1Clicked (self):
-        self.value.set(45)
+    def button3Clicked (self):
+        self.client.publish('getValue')
+        self.client.subscribe('Value')
+
 
     def button6Clicked (self):
         self.rightFrameClass.PutEntry(self.entryName.get(),self.entryAge.get())
@@ -65,3 +69,6 @@ class TopFrameClass:
         parameterFrameClass = ParameterFrameClass()
         parameterFrame = parameterFrameClass.buildFrame(newWindow)
         parameterFrame.pack(fill="both", expand="yes", padx=10, pady=10)
+
+    def PutValue (self , value):
+        self.value.set (value)
