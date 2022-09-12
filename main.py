@@ -1,12 +1,18 @@
+import base64
 import tkinter as tk
 from TopFrameClass import TopFrameClass
 from RightFrameClass import RightFrameClass
+from LeftFrameClass import LeftFrameClass
 import paho.mqtt.client as mqtt
 
 def on_message(cli, userdata, message):
     if message.topic == 'Value':
         print ('valor ', message.payload)
         topFrameClass.PutValue(message.payload)
+    if message.topic == 'videoFrame':
+        jpg_original = base64.b64decode(message.payload)
+        leftFrameClass.SetFrame(jpg_original)
+        print ('video frame received')
 
 
 def ConnectButtonClicked():
@@ -53,7 +59,9 @@ TopFrame.pack(fill="both", expand="yes", padx=10, pady=5)
 
 MidFrame = tk.Frame(MainFrame)
 MidFrame.pack(fill="both", expand="yes", padx=10, pady=5)
-LeftFrame = tk.LabelFrame(MidFrame, text = 'Left')
+
+leftFrameClass = LeftFrameClass()
+LeftFrame= leftFrameClass.buildFrame(MidFrame, client)
 LeftFrame.pack(side = tk.LEFT,fill="both", expand="yes", padx=5, pady=5)
 
 rightFrameClass = RightFrameClass()

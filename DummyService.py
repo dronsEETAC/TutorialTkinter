@@ -45,6 +45,7 @@ def on_message(cli, userdata, message):
         parameters = json.loads(message.payload.decode("utf-8"))
         print (parameters)
     if message.topic == 'StartVideoStream':
+        print ('start video stream')
         client.subscribe('StopVideoStream')
         sendingVideoStream = True
         w = threading.Thread(target=SendVideoStream)
