@@ -67,7 +67,7 @@ class TopFrameClass:
         # sets the geometry of toplevel
         newWindow.geometry("800x600")
         parameterFrameClass = ParameterFrameClass()
-        parameterFrame = parameterFrameClass.buildFrame(newWindow)
+        parameterFrame = parameterFrameClass.buildFrame(newWindow, self.client)
         parameterFrame.pack(fill="both", expand="yes", padx=10, pady=10)
 
     def PutValue (self , value):

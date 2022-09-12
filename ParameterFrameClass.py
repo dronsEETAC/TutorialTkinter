@@ -1,9 +1,11 @@
+import json
 import tkinter as tk
 
 
 class ParameterFrameClass:
 
-    def buildFrame(self, fatherFrame):
+    def buildFrame(self, fatherFrame, client):
+        self.client = client
         self.fatherFrame =fatherFrame
         self.ParameterFrame = tk.Frame(fatherFrame)
         self.ParameterFrame.rowconfigure(0, weight=4)
@@ -38,7 +40,7 @@ class ParameterFrameClass:
         self.scale.set(50)
         self.scale.grid (row = 1, column = 0, columnspan = 2, padx=5, pady=5, sticky="nesw")
 
-        self.closeButton = tk.Button(self.ParameterFrame, text="Close", bg='red', fg="white",
+        self.closeButton = tk.Button(self.ParameterFrame, text="Send parameters and close", bg='red', fg="white",
                                      command=self.closeButtonClicked)
         self.closeButton.grid(row = 2, column = 0, columnspan = 2, padx=5, pady=5, sticky="nesw")
 
@@ -46,9 +48,25 @@ class ParameterFrameClass:
         return self.ParameterFrame
 
     def closeButtonClicked (self):
-        print ('radio button result: ', self.var.get())
-        for sel in self.selected:
-            print ('check box result:' , sel.get())
-        print ('scale result ', self.scale.get())
-        self.fatherFrame.destroy()
+        MsgBox = tk.messagebox.askquestion(parent=self.ParameterFrame, title='Send Parameters',
+                                           message='Are you sure you want to send these values',
+                                           icon='warning')
+        if MsgBox == 'yes':
+            selectedOptions = []
+            for i in range(0, len(self.checkOptions)):
+                print(self.selected[i].get())
+                if self.selected[i].get() == '1':
+                    selectedOptions.append(self.checkOptions[i])
+
+            parameters = {
+                'radio': self.var.get(),
+                'scale': self.scale.get(),
+                'selectedOptions': selectedOptions
+            }
+
+            self.client.publish('writeParameters', json.dumps(parameters))
+            tk.messagebox.showinfo(parent=self.ParameterFrame, title='Return',
+                                   message='You will now return to the main application screen')
+
+            self.fatherFrame.destroy()
 
