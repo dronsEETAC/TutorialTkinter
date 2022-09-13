@@ -49,17 +49,20 @@ class MapFrameClass:
         self.positions = []
         self.markers = []
         self.paths = []
+        self.currentPath = None
 
-
+        self.map_widget.canvas.bind("<Motion>", self.drag)
 
     def finish (self):
         self.planning = False
         path = self.map_widget.set_path(self.positions, color='green')
         self.paths.append(path)
+        if self.currentPath:
+            self.currentPath.delete()
+        self.map_widget.canvas.unbind("<Motion>")
 
 
     def clear (self):
-        print ('celar')
         self.count = 0
         self.positions = []
         for marker in self.markers:
@@ -68,3 +71,10 @@ class MapFrameClass:
         for path in self.paths:
             path.delete ()
         self.paths = []
+
+    def drag (self, e):
+        p = self.map_widget.convert_canvas_coords_to_decimal_coords(e.x, e.y)
+        if self.count > 0:
+            if self.currentPath:
+                self.currentPath.delete()
+            self.currentPath = self.map_widget.set_path([self.positions[-1], p], color='red')

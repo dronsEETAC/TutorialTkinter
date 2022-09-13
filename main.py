@@ -38,7 +38,7 @@ def ConnectButtonClicked():
 connected = False
 root = tk.Tk()
 root.geometry ("1200x700")
-root.title ('Dashboard')
+root.title ('Dashboaq:rd')
 
 broker_address = "broker.hivemq.com"
 broker_port = 8000
