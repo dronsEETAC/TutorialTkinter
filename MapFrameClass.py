@@ -1,8 +1,9 @@
 import json
 import tkinter as tk
-from  tkinter import ttk
+from tkinter import ttk, messagebox
 import tkintermapview
 import mpu
+import requests
 
 class MapFrameClass:
 
@@ -17,6 +18,10 @@ class MapFrameClass:
         self.button2.grid(row=0, column=1, padx=5, pady=5)
         self.button3 = tk.Button(self.MapFrame, width=10, text="Clear", bg='blue', fg="white", command=self.clear)
         self.button3.grid(row=0, column=2, padx=5, pady=5)
+        self.button4 = tk.Button(self.MapFrame, width=10, text="Save flight plan", bg='blue', fg="white", command=self.save)
+        self.button4.grid(row=0, column=3, padx=5, pady=5)
+        self.button5 = tk.Button(self.MapFrame, width=10, text="Load flight plan", bg='blue', fg="white", command=self.load)
+        self.button5.grid(row=0, column=4, padx=5, pady=5)
         self.map_widget = tkintermapview.TkinterMapView(self.MapFrame, width=800, height=600, corner_radius=0)
         self.map_widget.grid(row=1, column=0, columnspan = 2, padx=5, pady=5)
         self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
@@ -126,3 +131,20 @@ class MapFrameClass:
             midPoint = ((self.coords[-1].x + e.x) // 2, (self.coords[-1].y + e.y) // 2)
             self.map_widget.canvas.coords(self.distance, midPoint)
             self.map_widget.canvas.itemconfig(self.distance, text=str(round(dist, 2)) + 'm')
+    def load(self):
+        URL = "http://localhost:4000/data"
+        r = requests.get(url=URL)
+
+        # extracting data in json format
+        data = r.json()
+        print('stored flight plans ', data[-1])
+
+    def save (self):
+        result = messagebox.askquestion(parent=self.MapFrame, title='Save flight plan', message='Are you sure?',
+                                        icon='warning')
+        if result == 'yes':
+            URL = "http://localhost:4000/data"
+            x = requests.post(URL, json=self.positions)
+            messagebox.showinfo(parent=self.MapFrame, title='ok', message='Flight plan saved')
+
+        pass
