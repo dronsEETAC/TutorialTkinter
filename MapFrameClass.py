@@ -1,6 +1,7 @@
 import json
 import tkinter as tk
 import tkintermapview
+import mpu
 
 class MapFrameClass:
 
@@ -8,6 +9,7 @@ class MapFrameClass:
         self.fatherFrame = fatherFrame
         self.MapFrame = tk.Frame(fatherFrame)
         self.planning = False
+        self.startingNewWP = False
         self.button1 = tk.Button(self.MapFrame, width=10, text="Start", bg='green', fg="white", command=self.start)
         self.button1.grid(row=0, column=0, padx=5, pady=5)
         self.button2 = tk.Button(self.MapFrame, width=10, text="Finish", bg='red', fg="white", command=self.finish)
@@ -20,11 +22,8 @@ class MapFrameClass:
         self.map_widget.set_position(41.275946, 1.987475)
         self.map_widget.set_zoom(20)
         #self.map_widget.add_left_click_map_command(self.left_click_event)
-        self.map_widget.add_right_click_menu_command(label="Insert WP",
-                                                command=self.add_marker_event,
-                                                pass_coords=True)
 
-
+        self.map_widget.add_right_click_menu_command(label="Insert WP", command=self.add_marker_event, pass_coords=True)
 
         return self.MapFrame
 
@@ -35,13 +34,18 @@ class MapFrameClass:
         if self.planning:
             self.count = self.count + 1
             marker = self.map_widget.set_marker(position[0],position[1], text= self.count )
+            self.startingNewWP = True
+
 
             if self.count > 1:
                 path = self.map_widget.set_path([self.positions[-1],position], color = 'red')
                 self.paths.append(path)
 
+
+
             self.positions.append(position)
             self.markers.append(marker)
+
 
     def start (self):
         self.planning = True
@@ -49,6 +53,7 @@ class MapFrameClass:
         self.positions = []
         self.markers = []
         self.paths = []
+        self.coords = []
         self.currentPath = None
 
         self.map_widget.canvas.bind("<Motion>", self.drag)
@@ -73,8 +78,17 @@ class MapFrameClass:
         self.paths = []
 
     def drag (self, e):
+        if self.startingNewWP:
+            self.coords.append (e)
+            self.startingNewWP = False
+            self.distance = self.map_widget.canvas.create_text(e.x, e.y, text='0', font=("Courier", 15, 'bold'),
+                                                               fill='blue', tags="distance")
         p = self.map_widget.convert_canvas_coords_to_decimal_coords(e.x, e.y)
         if self.count > 0:
             if self.currentPath:
                 self.currentPath.delete()
             self.currentPath = self.map_widget.set_path([self.positions[-1], p], color='red')
+            dist = mpu.haversine_distance(self.positions[-1], p) * 1000
+            midPoint = ((self.coords[-1].x + e.x) // 2, (self.coords[-1].y + e.y) // 2)
+            self.map_widget.canvas.coords(self.distance, midPoint)
+            self.map_widget.canvas.itemconfig(self.distance, text=str(round(dist, 2)) + 'm')
